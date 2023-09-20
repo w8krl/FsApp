@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  server:
+    build: ./server
+    container_name: fsapp-nodejs
+    volumes:
+      - ./server:/usr/src/app
+      - server-node-modules:/usr/src/app/node_modules
+    ports:
+      - "3001:3000"
+    depends_on:
+      - mongodb
+
+  web:
+    build: ./web
+    container_name: fsapp-react
+    volumes:
+      - ./web:/usr/src/app  # Note the volume name is changed to ./web to match the build path
+      - web-node-modules:/usr/src/app/node_modules
+    ports:
+      - "3000:3000"
+
+  mongodb:
+    image: mongo:latest
+    container_name: fsapp-mongodb
+    volumes:
+      - fsapp-mongodb-data:/data/db
+    ports:
+      - "27017:27017"
+  
+volumes:
+  fsapp-mongodb-data:
+  server-node-modules:  # Named volume for server's node_modules
+  web-node-modules:  # Named volume for web's node_modules
