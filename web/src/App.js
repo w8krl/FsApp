@@ -1,24 +1,34 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import { Header, Sidebar, MainContent, GridContainer } from './components/layout';
+import ProtectedRoute from './components/auth/ProtectedRoute'; // Import ProtectedRoute
+import Login from './components/pages/Login'; // Import Login component
 
 function App() {
+  const isLoggedIn = /* logic to check if user is logged in */ false;
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <Routes>
+        {/* Separate Route for login layout */}
+        <Route path="/login" element={<Login />} />
+        
+        {/* Route for the main layout */}
+        <Route
+          path="/*"
+          element={
+            <GridContainer>
+              <Header />
+              <Sidebar />
+              <Routes>
+                <Route path="/" element={<ProtectedRoute isLoggedIn={isLoggedIn} element={<MainContent />} />} />
+                {/* Add more Route components here as needed */}
+              </Routes>
+            </GridContainer>
+          }
+        />
+      </Routes>
+    </Router>
   );
 }
 
