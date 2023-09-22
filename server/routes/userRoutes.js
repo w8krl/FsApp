@@ -20,11 +20,38 @@ router.post('/register', async (req, res) => {
 });
 
 router.post('/login', passport.authenticate('local', { session: false }), (req, res) => {
-  const token = jwt.sign({ id: req.user.id }, 'your_jwt_secret', {
+  const token = jwt.sign({ id: req.user.id }, process.env.JWT_SECRET, {
     expiresIn: '1h'
   });
 
-  res.json({ message: 'Logged in successfully', token: token });
+  res.json({
+    message: 'Logged in successfully',
+    token: token,
+    user: {
+        id: req.user.id,
+        username: req.user.username
+    }
 });
+
+});
+
+router.get('/addTempUser', async (req, res) => {
+  const tempUsername = "karl";
+  const tempPassword = "karl123"; 
+  
+  try {
+      const tempUser = new User({
+          username: tempUsername,
+          password: tempPassword,
+      });
+
+      const savedUser = await tempUser.save();
+      res.json(savedUser);
+  } catch (err) {
+      res.status(400).json(err);
+  }
+});
+
+
 
 module.exports = router;

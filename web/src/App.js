@@ -10,7 +10,6 @@ function App() {
   return (
     <Router>
       <Routes>
-        {/* Separate Route for login layout */}
         <Route path="/login" element={<Login />} />
         
         {/* Route for the main layout */}
