@@ -37,7 +37,7 @@ router.post('/login', passport.authenticate('local', { session: false }), (req, 
 
 router.get('/addTempUser', async (req, res) => {
   const tempUsername = "karl";
-  const tempPassword = "karl123";  // This will be automatically hashed by the middleware
+  const tempPassword = "karl123"; 
   
   try {
       const tempUser = new User({
