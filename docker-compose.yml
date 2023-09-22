@@ -28,7 +28,17 @@ services:
       - fsapp-mongodb-data:/data/db
     ports:
       - "27017:27017"
-  
+  nginx:
+    image: nginx:latest
+    container_name: fsapp-nginx
+    volumes:
+      - ./proxy/nginx.conf:/etc/nginx/conf.d/default.conf
+    ports:
+      - "8080:80"
+    depends_on:
+      - web
+      - server
+
 volumes:
   fsapp-mongodb-data:
   server-node-modules:  # Named volume for server's node_modules

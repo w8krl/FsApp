@@ -1,0 +1,3 @@
+{
+    "watch": ["*.js", "routes/*.js", "models/*.js"]
+}

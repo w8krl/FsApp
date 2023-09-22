@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
+import axios from "axios";
 
 // Keyframes
 const TextAnimation = keyframes`
@@ -49,7 +50,7 @@ const AnimatedChar = styled.span`
   font-size: 10rem;
   transform: translateY(1em);
   animation: ${TextAnimation} 0.1s forwards;
-  animation-delay: ${(props) => props.delay}s;
+  animation-delay: ${(props) => props.$delay}s;
   animation-fill-mode: forwards;
 `;
 
@@ -91,7 +92,7 @@ const TabButton = styled.button`
   padding: 10px;
   cursor: pointer;
   font-size: 2rem;
-  font-weight: ${(props) => (props.active ? 'bold' : 'normal')};
+  font-weight: ${(props) => (props.$active ? 'bold' : 'normal')};
 `;
 
 const AnimatedTextContainer = styled.div`
@@ -146,7 +147,7 @@ const AnimatedText = ({ text }) => {
           {Array.from(word).map((char, charIndex) => (
             <AnimatedChar
               key={charIndex}
-              delay={wordIndex + charIndex * 0.1}
+              $delay={wordIndex + charIndex * 0.1}
             >
               {char}
             </AnimatedChar>
@@ -172,10 +173,33 @@ const Login = () => {
     });
   };
 
+  const handleTabChange = (tab) => {
+    setActiveTab(tab);
+    if (tab === 'register') {
+      localStorage.removeItem('jwtToken');
+    }
+  };
+
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // Your API call logic here
+
+    const apiEndpoint = '/api/users/login';
+
+    try {
+      const response = await axios.post(apiEndpoint, formData);
+
+      if (response.data.token) {
+        localStorage.setItem('jwtToken', response.data.token);
+        window.location = "/";
+      } else {
+        // error resp. Need to add.
+      }
+    } catch (error) {
+      console.error("Authentication failed:", error);
+    }
   };
+
 
   return (
     <Container>
@@ -186,10 +210,10 @@ const Login = () => {
       <FormColumn>
         <FormBox>
           <div>
-            <TabButton active={activeTab === 'login'} onClick={() => setActiveTab('login')}>
+            <TabButton $active={activeTab === 'login'} onClick={() => handleTabChange('login')}>
               Login
             </TabButton>
-            <TabButton active={activeTab === 'register'} onClick={() => setActiveTab('register')}>
+            <TabButton $active={activeTab === 'register'} onClick={() => handleTabChange('register')}>
               Register
             </TabButton>
           </div>
